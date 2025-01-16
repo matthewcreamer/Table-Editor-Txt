@@ -1,0 +1,108 @@
+1	OpenTerm	2										
+2	OpenDayOfWeek	6										
+3	OpenHour	20										
+4	OpenMinute	0										
+5	Junior_OpenTerm	2										
+6	Junior_OpenDayOfWeek	6										
+7	Junior_OpenHour	20										
+8	Junior_OpenMinute	0										
+9	Junior_Level_Min	9										
+10	Junior_Level_Max	29										
+11	Adult_Level_Min	40										
+12	Adult_Level_Max	100										
+50	MatchIntervalTime	300										
+51	OpenNoticeTime	1200										
+52	DojoRecommendTime	600										
+53	RegisterTime	1800										
+54	MinorMatch_WaitTime	300										
+55	MinorMatch_Last_Alram	60										
+56	MajorMatch_WaitTime	300										
+57	MajorMatch_Last_Alram	10										
+58	FinalMatch_WaitTime	300										
+59	FinalMatch_Last_Alram	10										
+60	MinorMatch_MapIndex	30000										
+61	MajorMatch_MapIndex	31000										
+62	FinalMatch_MapIndex	32000										
+63	Party_MinorMatch_MapIndex	40000										
+64	Party_MajorMatch_MapIndex	41000										
+65	Party_FinalMatch_MapIndex	42000										
+66	FinalMatch_AwardingTime	62										
+67	Tenkaichi_EndingWaitTime	600										
+68	FinalMatch_DirectionTime	45										
+69	Budokai_End_Time	86400										
+70	Budokai_Restart_Delay_Time	900										
+100	Open_Notice	Notice.html										
+101	Dojo_Recommend	Recommend.html										
+102	Request	Request.html										
+103	NewsRandom_1	Budokai_1.html										
+104	NewsRandom_2	Budokai_2.html										
+105	NewsRandom_3	Budokai_3.html										
+106	NewsRandom_4	Budokai_4.html										
+107	NewsRandom_5	Budokai_5.html										
+108	Award	Award.html										
+1000	Awarding_Location_Team	3	8.2	23.5	-99.8	-0.99	0.13					
+1001	Awarding_Location_Team	1	8.2	23.5	-101.8	-0.99	0.13					
+1002	Awarding_Location_Team	0	8.2	23.5	-103.8	-0.99	0.13					
+1003	Awarding_Location_Team	2	8.2	23.5	-105.8	-0.99	0.13					
+1004	Awarding_Location_Team	4	8.2	23.5	-107.8	-0.99	0.13					
+1005	Awarding_Location_Team	8	-31.1	23.5	-99.8	0.99	-0.13					
+1006	Awarding_Location_Team	6	-31.1	23.5	-101.8	0.99	-0.13					
+1007	Awarding_Location_Team	5	-31.1	23.5	-103.8	0.99	-0.13					
+1008	Awarding_Location_Team	7	-31.1	23.5	-105.8	0.99	-0.13					
+1009	Awarding_Location_Team	9	-31.1	23.5	-107.8	0.99	-0.13					
+1010	Awarding_Location_Team	13	-20.5	23.5	-123.5	-0.08	1					
+1011	Awarding_Location_Team	11	-18.5	23.5	-123.5	-0.08	1					
+1012	Awarding_Location_Team	10	-16.5	23.5	-123.5	-0.08	1					
+1013	Awarding_Location_Team	12	-14.5	23.5	-123.5	-0.08	1					
+1014	Awarding_Location_Team	14	-12.5	23.5	-123.5	-0.08	1					
+1015	Awarding_Location_Team	18	-10.3	23.5	-123.5	-0.08	1					
+1016	Awarding_Location_Team	16	-8.3	23.5	-123.5	-0.08	1					
+1017	Awarding_Location_Team	15	-6.3	23.5	-123.5	-0.08	1					
+1018	Awarding_Location_Team	17	-4.3	23.5	-123.5	-0.08	1					
+1019	Awarding_Location_Team	19	-2.3	23.5	-123.5	-0.08	1					
+1100	Major_Location	3	-31.1	23.5	-99.8	0.99	-0.13					
+1101	Major_Location	1	-31.1	23.5	-101.8	0.99	-0.13					
+1102	Major_Location	0	-31.1	23.5	-103.8	0.99	-0.13					
+1103	Major_Location	2	-31.1	23.5	-105.8	0.99	-0.13					
+1104	Major_Location	4	-31.1	23.5	-107.8	0.99	-0.13					
+1105	Major_Location	8	8.2	23.5	-99.8	-0.99	0.13					
+1106	Major_Location	6	8.2	23.5	-101.8	-0.99	0.13					
+1107	Major_Location	5	8.2	23.5	-103.8	-0.99	0.13					
+1108	Major_Location	7	8.2	23.5	-105.8	-0.99	0.13					
+1109	Major_Location	9	8.2	23.5	-107.8	-0.99	0.13					
+1200	Final_Location	3	-31.1	23.5	-99.8	0.99	-0.13					
+1201	Final_Location	1	-31.1	23.5	-101.8	0.99	-0.13					
+1202	Final_Location	0	-31.1	23.5	-103.8	0.99	-0.13					
+1203	Final_Location	2	-31.1	23.5	-105.8	0.99	-0.13					
+1204	Final_Location	4	-31.1	23.5	-107.8	0.99	-0.13					
+1205	Final_Location	8	8.2	23.5	-99.8	-0.99	0.13					
+1206	Final_Location	6	8.2	23.5	-101.8	-0.99	0.13					
+1207	Final_Location	5	8.2	23.5	-103.8	-0.99	0.13					
+1208	Final_Location	7	8.2	23.5	-105.8	-0.99	0.13					
+1209	Final_Location	9	8.2	23.5	-107.8	-0.99	0.13					
+2000	Minormatch_Reward_Personal	10	249	2241	18001	2	18001	1				
+2001	Major_Reward_Personal	2	2241	20169	18001	8	18001	1				
+2002	Major_Reward_Personal	4	1743	15687	18001	3	18001	1				
+2003	Major_Reward_Personal	8	1494	13446	18001	3	18001	1				
+2004	Major_Reward_Personal	16	996	8964	18001	2	18001	1				
+2005	Major_Reward_Personal	32	747	6723	18001	2	18001	1				
+2006	Awarding_Reward_Personal	174300	19453	1	17430	18001	3	8715	18001	2		
+2007	Minormatch_Reward_Party	10	746	6714	18001	2	18001	1				
+2008	Major_Reward_Party	2	3730	33570	18001	8	18001	1				
+2009	Major_Reward_Party	4	2984	26856	18001	4	18001	1				
+2010	Major_Reward_Party	8	2238	20142	18001	3	18001	1				
+2011	Major_Reward_Party	16	1492	13428	18001	3	18001	1				
+2012	Awarding_Reward_Party	261100	19453	1	26110	18001	4	13055	18001	3		
+3000	Junior_Minormatch_Reward_Personal	10	91	819	18002	2	18002	1				
+3001	Junior_Major_Reward_Personal	2	819	7371	18002	8	18002	1				
+3002	Junior_Major_Reward_Personal	4	637	5733	18002	3	18002	1				
+3003	Junior_Major_Reward_Personal	8	546	4914	18002	3	18002	1				
+3004	Junior_Major_Reward_Personal	16	364	3276	18002	2	18002	1				
+3005	Junior_Major_Reward_Personal	32	273	2457	18002	2	18002	1				
+3006	Junior_Awarding_Reward_Personal	63700	19452	1	6370	18002	3	3185	18002	2		
+3007	Junior_Minormatch_Reward_Party	10	272	2448	18002	2	18002	1				
+3008	Junior_Major_Reward_Party	2	1360	12240	18002	8	18002	1				
+3009	Junior_Major_Reward_Party	4	1088	9792	18002	4	18002	1				
+3010	Junior_Major_Reward_Party	8	816	7344	18002	3	18002	1				
+3011	Junior_Major_Reward_Party	16	544	4896	18002	3	18002	1				
+3012	Junior_Awarding_Reward_Party	95200	19452	1	9520	18002	4	4760	18002	3		

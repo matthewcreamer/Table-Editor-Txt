@@ -135,7 +135,19 @@ const configuration: webpack.Configuration = {
     new webpack.DefinePlugin({
       'process.type': '"renderer"',
     }),
+
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
   ],
+
+  resolve: {
+    fallback: {
+      fs: false,
+      path: false,
+      electron: false,
+    },
+  },
 };
 
 export default merge(baseConfig, configuration);

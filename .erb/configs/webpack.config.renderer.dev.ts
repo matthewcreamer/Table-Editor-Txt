@@ -162,6 +162,10 @@ const configuration: webpack.Configuration = {
       isDevelopment: process.env.NODE_ENV !== 'production',
       nodeModules: webpackPaths.appNodeModulesPath,
     }),
+
+    new webpack.ProvidePlugin({
+      process: require.resolve('process/browser'),
+    }),
   ],
 
   node: {
@@ -206,6 +210,14 @@ const configuration: webpack.Configuration = {
         })
         .on('error', (spawnError) => console.error(spawnError));
       return middlewares;
+    },
+  },
+
+  resolve: {
+    fallback: {
+      fs: false,
+      path: false,
+      electron: false,
     },
   },
 };

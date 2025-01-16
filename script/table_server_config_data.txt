@@ -1,0 +1,53 @@
+1	DragonballScrambleCoolTime_Hour	5										
+2	Luminosity_Ring_Rate	1	760	1	3800	1	6900	1	10000	1	10000	
+3	Common	Daily_Limit_Initial_Time	4									
+4	TMQ	Daily_Limit_TMQ	10									
+1001	BattleDungeon	BattleDungeon_World	910000									
+1002	BattleDungeon	EnterDirection	1074									
+1003	BattleDungeon	StageChangeDirection	1074									
+1004	BattleDungeon	StageChangeDirection_PlayTime	10									
+1005	BattleDungeon	StageTriggerObject	2									
+1100	BattleDungeon	NormalStageLoc	384.02	-20.69	-336.6	0.01	-1					
+1101	BattleDungeon	BossStageLoc	5	367.566	-22.729	147.092	0.09	-0.996				
+1102	BattleDungeon	BossStageLoc	10	-1548.325	-92.289	1582.918	-0.734	0.679				
+1103	BattleDungeon	BossStageLoc	15	-420.402	82.665	1660.797	-0.23	0.973				
+1104	BattleDungeon	BossStageLoc	20	-739.346	-78.679	560.706	-0.384	-0.923				
+1105	BattleDungeon	BossStageLoc	25	1512.45	-56.66	1900.56	-0.98	-0.21				
+1106	BattleDungeon	BossStageLoc	30	1299.273	-80.443	726.234	-0.847	0.531				
+1107	BattleDungeon	BossStageLoc	35	-1932.784	40.215	513.541	-0.577	0.817				
+1108	BattleDungeon	BossStageLoc	40	643.557	-25.565	637.178	-1	0.027				
+1109	BattleDungeon	BossStageLoc	45	1646.328	-27.054	-706.243	-0.998	-0.07				
+1110	BattleDungeon	BossStageLoc	50	640.88	97.22	1554.51	0.1	0.99				
+1111	BattleDungeon	BossStageLoc	55	367.566	-22.729	147.092	0.09	-0.996				
+1112	BattleDungeon	BossStageLoc	60	1646.328	-27.054	-706.243	-0.998	-0.07				
+1113	BattleDungeon	BossStageLoc	65	1299.273	-80.443	726.234	-0.847	0.531				
+1114	BattleDungeon	BossStageLoc	70	-1932.784	40.215	513.541	-0.577	0.817				
+1115	BattleDungeon	BossStageLoc	75	1512.45	-56.66	1900.56	-0.98	-0.21				
+1116	BattleDungeon	BossStageLoc	80	-1548.325	-92.289	1582.918	-0.734	0.679				
+1117	BattleDungeon	BossStageLoc	85	-739.346	-78.679	560.706	-0.384	-0.923				
+1118	BattleDungeon	BossStageLoc	90	643.557	-25.565	637.178	-1	0.027				
+1119	BattleDungeon	BossStageLoc	95	640.88	97.22	1554.51	0.1	0.99				
+1120	BattleDungeon	BossStageLoc	100	-420.402	82.665	1660.797	-0.23	0.973				
+1121	BattleDungeon	BossStageLoc	105	-1461.61	-69.75	-1566.68	-0.86	-0.52				
+1122	BattleDungeon	BossStageLoc	110	-1569.91	-51.84	-472.92	0.16	-0.99				
+1123	BattleDungeon	BossStageLoc	115	521.84	-1.6	-1706.72	-0.91	-0.42				
+1124	BattleDungeon	BossStageLoc	120	-512.4	-119.76	-915.21	-0.39	0.92				
+1125	BattleDungeon	BossStageLoc	125	-2484.99	-96.81	-1662.1	-0.88	-0.47				
+1126	BattleDungeon	BossStageLoc	130	-2769.5	-127.65	365.24	0.57	0.82				
+1127	BattleDungeon	BossStageLoc	135	-2646.98	-97.13	-416.18	-0.91	0.42				
+1128	BattleDungeon	BossStageLoc	140	-483.87	-68.4	-1811.26	0.6	-0.8				
+1129	BattleDungeon	BossStageLoc	145	-2820.73	-40.55	1272.71	-0.12	0.99				
+1130	BattleDungeon	BossStageLoc	150	1575.16	6.99	-1671.97	-1	0.07				
+1301	BattleDungeon	Mail_Sender_Tblidx	401									
+1302	BattleDungeon	Mail_Text_Tblidx	402									
+2001	DWC	Enter_Proposal_Wait_Time	30									
+2002	DWC	Enter_CharDirection_Tblidx	10004									
+2003	DWC	Enter_FailDirection_Tblidx	10005									
+2004	DWC	Enter_Direction_Play_Time	9									
+2005	DWC	Mail_Sender_Tblidx	301									
+2006	DWC	Mail_Text_Tblidx	302									
+2007	DWC	Daily_Limit_DWC	25									
+2008	DWC	Fail_Flash_Tblidx	20004									
+2009	DWC	Fail_State_Wait_Time	10									
+3001	SKDungeon	Daily_Limit_SKDungeon	8									
+4001	ItemUpgradeSpecialSource	40	30	20	10							

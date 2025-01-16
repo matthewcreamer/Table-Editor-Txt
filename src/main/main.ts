@@ -12,6 +12,7 @@ import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import fs from 'fs';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
@@ -29,6 +30,28 @@ ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   console.log(msgTemplate(arg));
   event.reply('ipc-example', msgTemplate('pong'));
+});
+
+// Start of Selection
+ipcMain.on('read-file-sync', async (_, filePath) => {
+  try {
+    const data = fs.readFileSync(filePath, 'utf8');
+    // console.log(`read-file-sync: ${data}`);
+    _.returnValue = data;
+  } catch (err) {
+    console.error(`read-file-sync: ${err}`);
+    _.returnValue = null;
+  }
+});
+
+ipcMain.on('write-file-sync', (_, { path: filePath, data }) => {
+  try {
+    fs.writeFileSync(filePath, data);
+    _.returnValue = true;
+  } catch (err) {
+    console.error(err);
+    _.returnValue = false;
+  }
 });
 
 if (process.env.NODE_ENV === 'production') {
@@ -73,11 +96,13 @@ const createWindow = async () => {
     show: false,
     width: 1024,
     height: 728,
+    fullscreen: true,
     icon: getAssetPath('icon.png'),
     webPreferences: {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
+      nodeIntegration: false,
     },
   });
 
