@@ -2,5 +2,6 @@
     "ColorScheme": "Pink",
     "ShowConfirmation": true,
     "ShowLoopIndex": true,
-    "ShowOptionIndex": true
+    "ShowOptionIndex": true,
+    "ShowLoopItems": true
 }

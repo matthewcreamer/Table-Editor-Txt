@@ -1,24 +1,15 @@
-import { createElectronRouter } from 'electron-router-dom';
+import { Route } from 'react-router-dom';
+import { Router } from '../lib/electron-router-dom';
 import App from './App';
 import View from './View';
 import View2 from './View2';
 
-const router = createElectronRouter([
-  {
-    windowName: 'main',
-    path: '/',
-    component: App,
-  },
-  {
-    windowName: 'view',
-    path: '/',
-    component: View,
-  },
-  {
-    windowName: 'view2',
-    path: '/',
-    component: View2,
-  },
-]);
-
-export default router;
+export default function Routes() {
+  return (
+    <Router
+      main={<Route path="/" element={<App />} />}
+      view={<Route path="/" element={<View />} />}
+      view2={<Route path="/" element={<View2 />} />}
+    />
+  );
+}

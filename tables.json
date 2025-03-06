@@ -280,32 +280,32 @@
         "options": false
       },
       "NEED_STR": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "NEED_CON": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "NEED_FOC": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "NEED_DEX": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "NEED_SOL": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "NEED_ENG": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
@@ -325,32 +325,32 @@
         "options": false
       },
       "SCOUTER_WATT": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "SCOUTER_MAX_POWER": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "SCOUTER_PARTS1": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "SCOUTER_PARTS2": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "SCOUTER_PARTS3": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "SCOUTER_PARTS4": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
@@ -478,67 +478,67 @@
         "options": false
       },
       "ATTACK_PHYSICAL_REVISION": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "ATTACK_ENERGY_REVISION": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "DEFENSE_PHYSICAL_REVISION": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "DEFENSE_ENERGY_REVISION": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "TMP_TAB_TYPE": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "CAN_RENEWAL": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "DISASSEMBLE_BF": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "DISASSEMBLE_NORMAL_MIN": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "DISASSEMBLE_NORMAL_MAX": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "DISASSEMBLE_UPPER_MIN": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "DISASSEMBLE_UPPER_MAX": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "DROP_VISUAL": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
       "USE_DISASSEMBLE": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       }
@@ -574,7 +574,7 @@
   "Table_Merchant_Data": {
     "name": "MERCHANT_DATA",
     "fileName": "Table_Merchant_Data.txt",
-    "favorite": false,
+    "favorite": true,
     "columns": {
       "TBLIDX": {
         "display": true,
@@ -582,7 +582,7 @@
         "options": false
       },
       "NAME": {
-        "display": true,
+        "display": false,
         "related": false,
         "options": false
       },
@@ -1155,7 +1155,7 @@
           },
           "USE_SKILL_IDX": {
             "display": true,
-            "related": false,
+            "related": "Table_Skill_Data",
             "options": false
           },
           "USE_SKILL_BASIS": {

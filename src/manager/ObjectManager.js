@@ -1,7 +1,9 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-console */
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Switch from 'react-switch';
+import { cloneDeep } from 'lodash';
 import {
   setTableName,
   setTableSelection,
@@ -10,126 +12,119 @@ import {
   setJsonData,
 } from '../redux/slice';
 import { LoadTable } from './TableManager';
-import { config } from './ConfigManager';
+// import { config } from './ConfigManager';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const { ipcRenderer } = window.electron;
-
-const data = JSON.parse(
+// const originalData = JSON.parse(
+//   await ipcRenderer.invoke('read-file', './tables.json'),
+// );
+const originalData = JSON.parse(
   ipcRenderer.sendSync('read-file-sync', './tables.json'),
 );
 
+// eslint-disable-next-line prefer-const
+let data = cloneDeep(originalData);
+
 const UpdateObject = () => {
   ipcRenderer.send('write-file-sync', {
-    path: `./tables${config.ServerType}.json`,
+    path: `./tables.json`,
     data: JSON.stringify(data, null, 2),
   });
 };
 
+function ToggleSwitch({ checked, onChange }) {
+  return <Switch onColor="#e087ba" checked={checked} onChange={onChange} />;
+}
+
 const GetColumns = (states, dispatch) => {
-  return Object.entries(states.JsonData[states.TableName].columns).map(
+  const handleToggleDisplay = (columnName, subKey = null) => {
+    if (subKey) {
+      data = {
+        ...data,
+        [states.TableName]: {
+          ...data[states.TableName],
+          columns: {
+            ...data[states.TableName].columns,
+            [columnName]: {
+              ...data[states.TableName].columns[columnName],
+              DATA: {
+                ...data[states.TableName].columns[columnName].DATA,
+                [subKey]: {
+                  ...data[states.TableName].columns[columnName].DATA[subKey],
+                  display:
+                    !data[states.TableName].columns[columnName].DATA[subKey]
+                      .display,
+                },
+              },
+            },
+          },
+        },
+      };
+    } else {
+      data = {
+        ...data,
+        [states.TableName]: {
+          ...data[states.TableName],
+          columns: {
+            ...data[states.TableName].columns,
+            [columnName]: {
+              ...data[states.TableName].columns[columnName],
+              display: !data[states.TableName].columns[columnName].display,
+            },
+          },
+        },
+      };
+    }
+
+    dispatch(setJsonData(data));
+    UpdateObject();
+  };
+
+  return Object.entries(data[states.TableName].columns).map(
     ([columnName, columnVal]) => (
       <div
         key={`table-${states.TableName}-${columnName}`}
-        className={`flex ${columnName === 'LOOP' || columnName === 'LOOP2' || columnName === 'LOOP3' || columnName === 'LOOP4' ? 'flex-col' : 'flex-row items-center'}`}
+        className={`flex ${
+          columnName.startsWith('LOOP') ? 'flex-col' : 'flex-row items-center'
+        }`}
       >
-        <span className="font-bold text-md w-2/4">{columnName}</span>
-        {columnName === 'LOOP' ||
-        columnName === 'LOOP2' ||
-        columnName === 'LOOP3' ||
-        columnName === 'LOOP4' ? (
+        <span className="text-slate-400 font-bold text-md w-2/4">
+          {columnName}
+        </span>
+        {columnName.startsWith('LOOP') ? (
           Object.entries(columnVal).map(([key, val]) => (
             <div
               key={`${states.TableName}-${columnName}-${key}`}
               className={`flex ${key === 'NUM' ? 'flex-row' : 'flex-col'}`}
             >
-              <span className="font-bold text-md w-2/4 ml-5">{key}</span>
+              <span className="text-slate-400 font-bold text-md w-2/4 ml-5">
+                {key}
+              </span>
               {key === 'NUM' ? (
                 <span className="font-bold text-md">{val}</span>
               ) : (
                 Object.entries(val).map(([subKey, subVal]) => (
                   <div
                     key={`${states.TableName}-${columnName}-${key}-${subKey}`}
-                    className={`flex ${subKey === 'NUM' ? 'flex-row' : 'flex-col'}`}
+                    className="flex flex-row mt-1"
                   >
-                    <div className="flex flex-row mt-1">
-                      <span className="font-bold text-md ml-10 w-2/4">
-                        {subKey}
-                      </span>
-                      <Switch
-                        onColor="#e087ba"
-                        onChange={() => {
-                          data[states.TableName].columns[columnName].DATA[
-                            subKey
-                          ].display =
-                            !data[states.TableName].columns[columnName].DATA[
-                              subKey
-                            ].display;
-                          dispatch(
-                            setJsonData({
-                              ...states.JsonData,
-                              [states.TableName]: {
-                                ...states.JsonData[states.TableName],
-                                columns: {
-                                  ...states.JsonData[states.TableName].columns,
-                                  [columnName]: {
-                                    ...states.JsonData[states.TableName]
-                                      .columns[columnName],
-                                    DATA: {
-                                      ...states.JsonData[states.TableName]
-                                        .columns[columnName].DATA,
-                                      [subKey]: {
-                                        ...states.JsonData[states.TableName]
-                                          .columns[columnName].DATA[subKey],
-                                        display:
-                                          data[states.TableName].columns[
-                                            columnName
-                                          ].DATA[subKey].display,
-                                      },
-                                    },
-                                  },
-                                },
-                              },
-                            }),
-                          );
-                          UpdateObject();
-                        }}
-                        checked={subVal.display}
-                      />
-                    </div>
+                    <span className="text-slate-400 font-bold text-md ml-10 w-2/4">
+                      {subKey}
+                    </span>
+                    <ToggleSwitch
+                      checked={subVal.display}
+                      onChange={() => handleToggleDisplay(columnName, subKey)}
+                    />
                   </div>
                 ))
               )}
             </div>
           ))
         ) : (
-          <Switch
-            onColor="#e087ba"
-            onChange={() => {
-              data[states.TableName].columns[columnName].display =
-                !data[states.TableName].columns[columnName].display;
-              dispatch(
-                setJsonData({
-                  ...states.JsonData,
-                  [states.TableName]: {
-                    ...states.JsonData[states.TableName],
-                    columns: {
-                      ...states.JsonData[states.TableName].columns,
-                      [columnName]: {
-                        ...states.JsonData[states.TableName].columns[
-                          columnName
-                        ],
-                        display:
-                          data[states.TableName].columns[columnName].display,
-                      },
-                    },
-                  },
-                }),
-              );
-              UpdateObject();
-            }}
-            checked={
-              states.JsonData[states.TableName].columns[columnName].display
-            }
+          <ToggleSwitch
+            checked={columnVal.display}
+            onChange={() => handleToggleDisplay(columnName)}
           />
         )}
       </div>
@@ -140,12 +135,7 @@ const GetColumns = (states, dispatch) => {
 const GetColumnData = (states) => {
   const arr = [];
   Object.entries(data[states.TableName].columns).forEach(([key, val]) => {
-    if (
-      key === 'LOOP' ||
-      key === 'LOOP2' ||
-      key === 'LOOP3' ||
-      key === 'LOOP4'
-    ) {
+    if (key.startsWith('LOOP')) {
       for (let num = 0; num < val.NUM; num += 1) {
         for (
           let index = 0;
@@ -197,7 +187,7 @@ export default function DisplayTableSelection() {
                 ),
               ),
             ]}
-            className={`${states.TableName ? '' : 'hidden'} btn-primary px-5 py-2 font-bold bg-line hover:border-b-2 my-auto ml-5 hover:-translate-y-1`}
+            className={`${states.TableName ? '' : 'hidden'} btn-primary px-5 py-2 font-bold bg-line border-b-2 border-foreground hover:border-pink my-auto ml-5 hover:-translate-y-1`}
           >
             Select Table
           </button>
@@ -252,7 +242,14 @@ export default function DisplayTableSelection() {
               type="button"
               onClick={() => {
                 dispatch(setTableFavorite(!states.TableFavorite));
-                data[states.TableName].favorite = !states.TableFavorite;
+                data = {
+                  ...data,
+                  [states.TableName]: {
+                    ...data[states.TableName],
+                    favorite: !states.TableFavorite,
+                  },
+                };
+                // (data[states.TableName].favorite = !states.TableFavorite);
                 UpdateObject();
               }}
               className={`${states.TableFavorite ? 'text-red' : 'text-line'} hover:text-red hover:bg-line p-1 rounded transition-colors duration-150 text-2xl ml-5`}

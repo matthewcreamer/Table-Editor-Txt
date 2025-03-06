@@ -1,8 +1,9 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-console */
 /* eslint-disable react/prop-types */
 import { useDispatch, useSelector } from 'react-redux';
 import { List, AutoSizer } from 'react-virtualized';
-import React from 'react';
+import React, { useState } from 'react';
 import { DangerAlert, SuccessToast, WarningToast } from '../shared/Alerts';
 import {
   setCurrentItem,
@@ -16,6 +17,7 @@ import {
   setDuplicateTblidx,
 } from '../redux/slice';
 import { config } from './ConfigManager';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const { ipcRenderer } = window.electron;
 
@@ -91,17 +93,11 @@ export const SaveTable = (states) => {
       .join('\t'),
   ).join('\n');
 
-  ipcRenderer.send('write-file', {
+  ipcRenderer.sendSync('write-file-sync', {
     path: `./script/${states.TableName}.txt`,
     data: output,
   });
-  ipcRenderer.on('write-file-complete', (success) => {
-    if (success) {
-      SuccessToast.fire(`Saved ${states.TableName}.txt`);
-    } else {
-      WarningToast.fire('Failed to save file');
-    }
-  });
+  SuccessToast.fire(`Saved ${states.TableName}.txt`);
 };
 
 function TableRow({ tables, states, dispatch, style }) {
@@ -195,6 +191,131 @@ export function DisplayTblidx({ states, dispatch }) {
   );
 }
 
+function Input({ index, data, val, states, handleUpdate }) {
+  return (
+    <div key={index} className="w-full grid grid-cols-2 items-center gap-4">
+      <span className="text-xl ml-auto text-slate-400">
+        {index}
+        {data?.loop >= 0 && config.ShowLoopIndex && `: ${data?.loop}`}
+      </span>
+      {data?.options !== false && data?.options !== undefined ? (
+        <select
+          className="btn-primary p-3 w-full flex font-bold bg-line focus:text-pink focus:border-r-4 hover:border-r-4"
+          value={val}
+          onChange={(e) => {
+            handleUpdate(e, index, val);
+          }}
+        >
+          {Object.entries(data?.options).map(([optKey, optVal]) => (
+            <option
+              key={optKey}
+              className="btn-primary p-3 flex font-bold bg-line focus:text-pink focus:border-r-4 hover:border-r-4"
+              value={optKey}
+            >
+              {optVal} {config.ShowOptionIndex && optKey}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <div className="flex flex-row items-center space-x-2 w-full">
+          <input
+            type="text"
+            className="btn-primary p-3 flex font-bold bg-line focus:text-pink focus:border-r-4 hover:border-r-4 w-full"
+            value={val}
+            onChange={(e) => {
+              handleUpdate(
+                e,
+                index,
+                val,
+                data?.loop || data?.loop === 0 ? data?.loop : false,
+              );
+            }}
+          />
+          {data?.related !== false && val !== '4294967295' && (
+            <button
+              type="button"
+              onClick={() =>
+                ipcRenderer.sendSync('view', {
+                  TableName: [states?.TableName, data?.related],
+                  Tblidx: val,
+                })
+              }
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  ipcRenderer.sendSync('view', {
+                    TableName: [states.TableName, data?.related],
+                    Tblidx: val,
+                  });
+                }
+              }}
+              aria-label="View"
+              className="hover:bg-line hover:border-b-4 border-pink py-2 px-3 rounded-lg cursor-pointer"
+            >
+              <i className="fas fa-up-right-from-square" />
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function LoopRenderInput({ data, states, handleUpdate }) {
+  const [showStates, setShowStates] = useState(
+    new Array(data.length).fill(config.ShowLoopItems),
+  );
+
+  const toggleShow = (index) => {
+    setShowStates((prevStates) => {
+      const newStates = [...prevStates];
+      newStates[index] = !newStates[index];
+      return newStates;
+    });
+  };
+
+  return (
+    <div>
+      {data.map((group, groupIndex) => (
+        <div key={`group-${groupIndex}`} className="my-1">
+          <button
+            type="button"
+            onClick={() => toggleShow(groupIndex)}
+            aria-label="View"
+            className="btn-primary p-3 w-auto gap-2 flex font-bold bg-line border-b-4 border-foreground hover:border-pink justify-between items-center"
+          >
+            #{groupIndex} {!showStates[groupIndex] ? 'Show' : 'Hide'}
+            <i
+              className={`fas fa-${!showStates[groupIndex] ? 'eye' : 'eye-slash'}`}
+            />
+          </button>
+          <div className="space-y-1">
+            {showStates[groupIndex] &&
+              group.map((item) =>
+                Object.entries(item).map(
+                  ([key, val]) =>
+                    item.display === true &&
+                    key !== 'display' &&
+                    key !== 'options' &&
+                    key !== 'related' &&
+                    key !== 'loop' && (
+                      <Input
+                        key={`${item.ITEM_IDX}-${key}`}
+                        index={key}
+                        data={item}
+                        val={val}
+                        states={states}
+                        handleUpdate={handleUpdate}
+                      />
+                    ),
+                ),
+              )}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function DisplayInputs({ states, dispatch }) {
   const handleUpdate = (e, key, val, l = false) => {
     const tblData = [...states.TableData];
@@ -232,88 +353,46 @@ export function DisplayInputs({ states, dispatch }) {
     dispatch(setTableData([...tblData]));
     return tblData;
   };
+  const groupByLoop = () => {
+    return states.CurrentItem.reduce((acc, item) => {
+      if ('loop' in item) {
+        acc[item.loop] = acc[item.loop] || [];
+        acc[item.loop].push(item);
+      }
+      return acc;
+    }, []);
+  };
   return (
-    <div className="overflow-scroll h-full space-y-1 w-full col-span-3">
+    <div className="overflow-scroll h-full space-y-1 w-full col-span-3 xl:col-span-2 xl:col-start-4">
       {states.CurrentItem &&
-        Object.values(states.CurrentItem).map((data) =>
-          Object.entries(data).map(
-            ([key, val]) =>
-              data.display === true &&
-              key !== 'display' &&
-              key !== 'options' &&
-              key !== 'related' &&
-              key !== 'loop' && (
-                <div
-                  key={key}
-                  className="w-full grid grid-cols-2 items-center gap-4"
-                >
-                  <span className="text-xl ml-auto">
-                    {key}
-                    {data.loop >= 0 && config.ShowLoopIndex && `: ${data.loop}`}
-                  </span>
-                  {data.options !== false && data.options !== undefined ? (
-                    <select
-                      className="btn-primary p-3 w-full flex font-bold bg-line focus:text-pink focus:border-r-4 hover:border-r-4"
-                      value={val}
-                      onChange={(e) => {
-                        handleUpdate(e, key, val);
-                      }}
-                    >
-                      {Object.entries(data.options).map(([optKey, optVal]) => (
-                        <option
-                          key={optKey}
-                          className="btn-primary p-3 flex font-bold bg-line focus:text-pink focus:border-r-4 hover:border-r-4"
-                          value={optKey}
-                        >
-                          {optVal} {config.ShowOptionIndex && optKey}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <div className="flex flex-row items-center space-x-2 w-full">
-                      <input
-                        type="text"
-                        className="btn-primary p-3 flex font-bold bg-line focus:text-pink focus:border-r-4 hover:border-r-4 w-full"
-                        value={val}
-                        onChange={(e) => {
-                          handleUpdate(
-                            e,
-                            key,
-                            val,
-                            data.loop || data.loop === 0 ? data.loop : false,
-                          );
-                        }}
-                      />
-                      {data.related !== false && val !== '4294967295' && (
-                        <button
-                          type="button"
-                          onClick={() =>
-                            // ipcRenderer.send('view', {
-                            //   TableName: [states.TableName, data.related],
-                            //   Tblidx: val,
-                            // })
-                            {}
-                          }
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              // ipcRenderer.send('view', {
-                              //   TableName: [states.TableName, data.related],
-                              //   Tblidx: val,
-                              // });
-                            }
-                          }}
-                          aria-label="View"
-                          className="hover:bg-line p-2 rounded-lg cursor-pointer"
-                        >
-                          <i className="fas fa-up-right-from-square" />
-                        </button>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ),
-          ),
+        Object.values(states.CurrentItem).map(
+          (data) =>
+            !data.loop &&
+            data.loop !== 0 &&
+            Object.entries(data).map(
+              ([key, val]) =>
+                data.display === true &&
+                key !== 'display' &&
+                key !== 'options' &&
+                key !== 'related' &&
+                key !== 'loop' && (
+                  <Input
+                    index={key}
+                    data={data}
+                    val={val}
+                    states={states}
+                    handleUpdate={handleUpdate}
+                  />
+                ),
+            ),
         )}
+      {states.CurrentItem && groupByLoop().length > 0 && (
+        <LoopRenderInput
+          data={groupByLoop()}
+          states={states}
+          handleUpdate={handleUpdate}
+        />
+      )}
     </div>
   );
 }
@@ -410,7 +489,7 @@ export function Settings() {
       BulkEdit.Table &&
       BulkEdit.Value
     ) {
-      if (BulkEdit.FromTblidx < BulkEdit.ToTblidx) {
+      if (Number(BulkEdit.FromTblidx) < Number(BulkEdit.ToTblidx)) {
         const tables = [
           ...tblData.filter(
             (x) =>
@@ -495,7 +574,7 @@ export function Settings() {
   };
   const uniqueFilters = [];
   return (
-    <div className="overflow-scroll h-full w-full border-r-4 border-background/30 select-none">
+    <div className="overflow-scroll h-full w-full select-none">
       <div className="flex flex-col h-full w-full">
         <input
           id="SearchInput"
@@ -515,20 +594,17 @@ export function Settings() {
               SwapInputs();
             }
           }}
-          className="flex flex-row justify-between items-center py-3 cursor-pointer w-full"
+          className="btn-primary border-b-4 border-foreground hover:border-pink flex flex-row justify-between items-center py-1 cursor-pointer w-24 hover:bg-line rounded-lg mt-2 px-3 mx-auto"
         >
           <span>Swap</span>
-          <span
-            aria-label="Swap"
-            className="hover:bg-line p-1 rounded-lg cursor-pointer"
-          >
+          <span aria-label="Swap" className="p-1 rounded-lg cursor-pointer">
             <i className="fas fa-retweet" />
           </span>
         </button>
         <input
           id="DuplicateInput"
           type="text"
-          className="btn-primary p-3 w-full flex font-bold bg-line focus:text-pink focus:border-r-4 hover:border-r-4 mt-1"
+          className="btn-primary p-3 w-full flex font-bold bg-line focus:text-pink focus:border-r-4 hover:border-r-4 mt-2"
           placeholder="Duplicate TBLIDX"
           value={states.Settings.DuplicateTblidx}
           onChange={(e) => {
@@ -550,7 +626,7 @@ export function Settings() {
           Duplicate
         </button>
 
-        <hr className="border-t-4 border-background/30 my-10" />
+        <hr className="border-t-4 border-background/30 my-3" />
 
         <button
           type="button"
@@ -560,12 +636,15 @@ export function Settings() {
               dispatch(setFilterShow(!states.Settings.Filter.Show));
             }
           }}
-          className="flex flex-row justify-between cursor-pointer w-full"
+          className="btn-primary p-3 w-full flex font-bold bg-line border-b-4 border-foreground hover:border-pink justify-between items-center"
         >
-          <span>Filter</span>
-          <span className="hover:bg-line p-1 rounded-lg">
+          <div className="space-x-2">
             <i className="fas fa-filter" />
-          </span>
+            <span>Filter</span>
+          </div>
+          <i
+            className={`fas fa-chevron-${states.Settings.Filter.Show ? 'down' : 'right'}`}
+          />
         </button>
         <div
           className={`${states.Settings.Filter.Show === false && 'hidden'} select-none`}
@@ -675,19 +754,22 @@ export function Settings() {
               )}
         </div>
 
-        <hr className="border-t-4 border-background/30 my-10" />
+        <hr className="border-t-4 border-background/30 my-3" />
 
         <button
           type="button"
           onClick={() =>
             dispatch(setBulkEdit({ Show: !states.Settings.BulkEdit.Show }))
           }
-          className="flex flex-row justify-between cursor-pointer w-full"
+          className="btn-primary p-3 w-full flex font-bold bg-line border-b-4 border-foreground hover:border-pink justify-between items-center"
         >
-          <span>Bulk Edit</span>
-          <span className="hover:bg-line p-1 rounded-lg">
+          <div className="space-x-2">
             <i className="fas fa-edit" />
-          </span>
+            <span>Bulk Edit</span>
+          </div>
+          <i
+            className={`fas fa-chevron-${states.Settings.BulkEdit.Show ? 'down' : 'right'}`}
+          />
         </button>
         <div
           className={`${states.Settings.BulkEdit.Show === false && 'hidden'} select-none`}
@@ -717,9 +799,9 @@ export function Settings() {
           >
             <option
               className="btn-primary p-3 flex font-bold bg-line focus:text-pink focus:border-r-4 hover:border-r-4"
-              value="TABLE"
+              value=""
             >
-              TABLE
+              SELECT FIELD NAME
             </option>
             {states.TableData[0] &&
               Object.values(states.TableData[0]).map((data) =>
@@ -729,6 +811,7 @@ export function Settings() {
                     key !== 'display' &&
                     key !== 'options' &&
                     key !== 'loop' &&
+                    key !== 'related' &&
                     data.loop === undefined && (
                       <option
                         key={key}
@@ -757,7 +840,7 @@ export function Settings() {
           </button>
         </div>
 
-        <hr className="border-t-4 border-background/30 my-10" />
+        <hr className="border-t-4 border-background/30 my-3" />
 
         <button
           type="button"
@@ -766,12 +849,15 @@ export function Settings() {
               setBulkDuplicate({ Show: !states.Settings.BulkDuplicate.Show }),
             )
           }
-          className="flex flex-row justify-between cursor-pointer w-full"
+          className="btn-primary p-3 w-full flex font-bold bg-line border-b-4 border-foreground hover:border-pink justify-between items-center"
         >
-          <span>Bulk Duplicate</span>
-          <span className="hover:bg-line p-1 rounded-lg">
+          <div className="space-x-2">
             <i className="fas fa-copy" />
-          </span>
+            <span>Bulk Duplicate</span>
+          </div>
+          <i
+            className={`fas fa-chevron-${states.Settings.BulkDuplicate.Show ? 'down' : 'right'}`}
+          />
         </button>
         <div
           className={`${states.Settings.BulkDuplicate.Show === false && 'hidden'} select-none`}
@@ -805,20 +891,18 @@ export function Settings() {
           />
           <button
             type="button"
-            className="btn-primary p-3 w-full flex font-bold bg-line hover:border-r-4 hover:-translate-x-1 mt-5 justify-center"
+            className="btn-primary p-3 w-full flex font-bold bg-line hover:border-r-4 hover:-translate-x-1 mt-5 mb-2 justify-center"
             onClick={BulkDuplicateFn}
           >
             Confirm
           </button>
         </div>
 
-        <hr className="border-t-4 border-background/30 my-10" />
-
         {states.CurrentItem && (
           <button
             type="button"
             onClick={DeleteRow}
-            className="btn-primary p-3 w-full mt-auto font-bold bg-line hover:border-r-4 hover:-translate-x-1 justify-center text-red"
+            className="btn-primary p-3 w-full mt-auto font-bold bg-line hover:text-red border-b-4 border-foreground hover:border-red hover:-translate-y-1 justify-center text-slate-400"
           >
             Delete {states.CurrentItem[0].TBLIDX}
           </button>

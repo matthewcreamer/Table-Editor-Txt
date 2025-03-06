@@ -10,13 +10,7 @@ const WarningAlert = Swal.mixin({
   denyButtonColor: '#44475a',
   icon: 'warning',
   iconColor: '#ffb86c',
-  customClass: {
-    confirmButton:
-      'btn-primary py-3 px-10 font-bold bg-line hover:border-l-4 hover:translate-x-1 mx-2',
-    denyButton:
-      'btn-primary py-3 px-10 font-bold bg-line hover:border-r-4 hover:-translate-x-1 mx-2',
-  },
-  buttonsStyling: false,
+  buttonsStyling: true,
 });
 
 const DangerAlert = Swal.mixin({
@@ -29,13 +23,7 @@ const DangerAlert = Swal.mixin({
   denyButtonColor: '#44475a',
   icon: 'warning',
   iconColor: '#ff5555',
-  customClass: {
-    confirmButton:
-      'btn-primary border-red hover:text-red py-3 px-10 font-bold bg-line hover:border-b-2 hover:-translate-y-1 mx-2',
-    denyButton:
-      'btn-primary py-3 px-10 font-bold bg-line hover:border-b-2 hover:-translate-y-1 mx-2',
-  },
-  buttonsStyling: false,
+  buttonsStyling: true,
 });
 
 const SuccessToast = Swal.mixin({

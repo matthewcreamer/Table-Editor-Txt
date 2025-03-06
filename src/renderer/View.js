@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { config } from '../manager/ConfigManager';
 import { SuccessToast } from '../shared/Alerts';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const { ipcRenderer } = window.electron;
 const data = JSON.parse(
@@ -48,7 +49,7 @@ const LoadTable = (ObjectData, TableName, Tblidx) => {
   const table = [];
   const tableObj = [];
   const filePath = `./script/${TableName}.txt`;
-  const file = JSON.parse(ipcRenderer.sendSync('read-file-sync', filePath));
+  const file = ipcRenderer.sendSync('read-file-sync', filePath);
   file.split('\n').forEach((item) => {
     if (item.includes('//') === false && item !== '') {
       table.push(item.split('\t'));
@@ -129,7 +130,7 @@ const SaveTable = (CurrentItem, TableName, Tblidx) => {
     .join('\n');
 
   ipcRenderer.sendSync('write-file-sync', {
-    path: `./script${config.ServerType}/${TableName}.txt`,
+    path: `./script/${TableName}.txt`,
     data: output,
   });
   SuccessToast.fire(`Saved ${TableName}.txt`);
@@ -143,18 +144,31 @@ function View() {
     tblidx: null,
   });
 
-  ipcRenderer.on('fromMainWindow', function handleFromMain(event, arg) {
-    if (state.isLoaded === false)
-      setState({
-        isLoaded: true,
-        currentItem: LoadTable(
-          GetColumnData(arg.TableName[1]),
-          arg.TableName[1],
-          arg.Tblidx,
-        ),
-        tableName: arg.TableName,
-        tblidx: arg.Tblidx,
-      });
+  useEffect(() => {
+    const handleData = (arg) => {
+      try {
+        console.log('view loaded', arg);
+        setState({
+          isLoaded: true,
+          currentItem: LoadTable(
+            GetColumnData(arg.TableName[1]),
+            arg.TableName[1],
+            arg.Tblidx,
+          ),
+          tableName: arg.TableName,
+          tblidx: arg.Tblidx,
+        });
+      } catch (error) {
+        console.error('Error parsing data:', error);
+      }
+    };
+
+    ipcRenderer.once('fromMainWindow', handleData);
+
+    // Clean up the listener when component unmounts
+    return () => {
+      ipcRenderer.removeListener('fromMainWindow', handleData);
+    };
   });
 
   const handleUpdate = (e, key, val, l = false) => {
@@ -190,29 +204,8 @@ function View() {
   };
 
   return (
-    <div className="App bg-background overflow-hidden min-h-screen w-full text-pink font-bold overscroll-none p-0 m-0">
-      <div
-        className="header fixed w-full flex h-[35px] bg-background"
-        style={{ WebkitAppRegion: 'drag' }}
-      >
-        <h1 className="place-self-center ml-5 text-xs" id="title">
-          Table Editor
-        </h1>
-        <button
-          type="button"
-          onClick={() => {
-            const { remote } = window.require('electron');
-            remote.getCurrentWindow().hide();
-          }}
-          className="btn-primary px-7 h-full font-bold bg-foreground hover:border-r-2 hover:-translate-x-1 ml-auto"
-          style={{ WebkitAppRegion: 'no-drag' }}
-          aria-label="Close"
-        >
-          <i className="fas fa-times m-auto" />
-        </button>
-      </div>
-
-      <div className="tabs fixed flex w-full bg-line h-[50px] select-none items-center mt-[35px]">
+    <div className="App bg-background overflow-hidden min-h-screen w-full text-pink font-bold overscroll-none p-0 m-0 border-solid border-background border-x-2">
+      <div className="tabs fixed flex w-full bg-line h-[50px] select-none items-center">
         {state.tableName && (
           <span className="ml-5 font-bold text-sm text-background">
             {state.tableName[0]} {'>'} {state.tableName[1]}
@@ -232,7 +225,7 @@ function View() {
       </div>
 
       {state.isLoaded && (
-        <div className="overflow-scroll h-full space-y-1 w-full pt-[90px]">
+        <div className="overflow-scroll h-full px-4 space-y-1 w-full pt-[65px]">
           {state.currentItem[0] &&
             Object.values(state.currentItem[0]).map((item) =>
               Object.entries(item).map(
@@ -289,25 +282,27 @@ function View() {
                               );
                             }}
                           />
-                          {data.related !== false && val !== '4294967295' && (
-                            <button
-                              type="button"
-                              onClick={() =>
-                                ipcRenderer.send('view2', {
-                                  TableName: [
-                                    state.tableName[0],
-                                    state.tableName[1],
-                                    data.related,
-                                  ],
-                                  Tblidx: val,
-                                })
-                              }
-                              aria-label="View2"
-                              className="hover:bg-line p-2 rounded-lg cursor-pointer"
-                            >
-                              <i className="fas fa-up-right-from-square" />
-                            </button>
-                          )}
+                          <span>{data.related}</span>
+                          {data.related !== false ||
+                            (val !== '4294967295' && (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  ipcRenderer.send('view2', {
+                                    TableName: [
+                                      state.tableName[0],
+                                      state.tableName[1],
+                                      data.related,
+                                    ],
+                                    Tblidx: val,
+                                  })
+                                }
+                                aria-label="View"
+                                className="hover:bg-line hover:border-b-4 border-pink py-2 px-3 rounded-lg cursor-pointer"
+                              >
+                                <i className="fas fa-up-right-from-square" />
+                              </button>
+                            ))}
                         </div>
                       )}
                     </div>

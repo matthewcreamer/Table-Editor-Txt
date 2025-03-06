@@ -106,6 +106,7 @@
   },
   "dependencies": {
     "@electron/notarize": "^2.3.2",
+    "@fortawesome/fontawesome-free": "^6.7.2",
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
@@ -115,6 +116,7 @@
     "electron-router-dom": "^2.0.0",
     "electron-updater": "^6.1.4",
     "fs": "^0.0.1-security",
+    "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^9.2.0",
@@ -273,8 +275,8 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "electron-react-boilerplate",
-      "repo": "electron-react-boilerplate"
+      "owner": "kuini-1",
+      "repo": "evo-editor"
     }
   },
   "collective": {

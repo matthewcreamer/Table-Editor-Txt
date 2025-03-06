@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { config } from '../manager/ConfigManager';
 import { SuccessToast } from '../shared/Alerts';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const { ipcRenderer } = window.electron;
 const data = JSON.parse(

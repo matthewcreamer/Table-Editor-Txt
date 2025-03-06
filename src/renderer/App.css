@@ -14,11 +14,11 @@ iframe {
 }
 
 div { outline: none; }
-
+/*
 ::-webkit-scrollbar              { background-color: rgba(0,0,0,0.00001); }
 ::-webkit-scrollbar-button       { background-color: rgba(0,0,0,0.00001); }
 ::-webkit-scrollbar-track        { background-color: rgba(0,0,0,0.00001); }
 ::-webkit-scrollbar-track-piece  { background-color: rgba(0,0,0,0.00001); }
 ::-webkit-scrollbar-thumb        { background-color: rgba(0,0,0,0.00001); }
 ::-webkit-scrollbar-corner       { background-color: rgba(0,0,0,0.00001); }
-::-webkit-resizer                { background-color: rgba(0,0,0,0.00001); }
+::-webkit-resizer                { background-color: rgba(0,0,0,0.00001); } */
