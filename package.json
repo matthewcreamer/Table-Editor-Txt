@@ -1,5 +1,6 @@
 {
-  "name": "electron-react-boilerplate",
+  "version": "4.6.1",
+  "name": "evo-editor",
   "description": "A foundation for scalable desktop apps",
   "keywords": [
     "electron",
@@ -12,13 +13,13 @@
     "hot",
     "reload"
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
+  "homepage": "https://github.com/matthewcreamer/Table-Editor-Txt#readme",
   "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
+    "url": "https://github.com/matthewcreamer/Table-Editor-Txt/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
+    "url": "git+https://github.com/matthewcreamer/Table-Editor-Txt.git"
   },
   "license": "MIT",
   "author": {
@@ -43,6 +44,9 @@
     "lint": "cross-env NODE_ENV=development eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "cross-env NODE_ENV=development eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "package": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --publish never && npm run build:dll",
+    "package:publish": "ts-node ./.erb/scripts/clean.js dist && npm run build && electron-builder build --publish always && npm run build:dll",
+    "publish:draft": "electron-builder build --publish always --draft",
+    "publish:release": "electron-builder build --publish always",
     "rebuild": "electron-rebuild --parallel --types prod,dev,optional --module-dir release/app",
     "prestart": "cross-env NODE_ENV=development TS_NODE_TRANSPILE_ONLY=true webpack --config ./.erb/configs/webpack.config.main.dev.ts",
     "start": "ts-node ./.erb/scripts/check-port-in-use.js && npm run prestart && npm run start:renderer",
@@ -195,21 +199,16 @@
     "webpack-merge": "^5.9.0"
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.erb.ElectronReact",
+    "productName": "evo-editor",
+    "appId": "com.matthewcreamer.evo-editor",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
     "files": [
       "dist",
       "node_modules",
-      "package.json",
-      "./build/**/*",
-      "*.js",
-      "*.css"
+      "package.json"
     ],
     "mac": {
-      "sign": ".erb/scripts/notarize.js",
-      "notarize": false,
       "target": {
         "target": "default",
         "arch": [
@@ -218,9 +217,8 @@
         ]
       },
       "type": "distribution",
-      "hardenedRuntime": true,
-      "entitlements": "assets/entitlements.mac.plist",
-      "entitlementsInherit": "assets/entitlements.mac.plist",
+      "identity": null,
+      "hardenedRuntime": false,
       "gatekeeperAssess": false
     },
     "dmg": {
@@ -275,8 +273,10 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "kuini-1",
-      "repo": "evo-editor"
+      "owner": "matthewcreamer",
+      "repo": "Table-Editor-Txt",
+      "private": false,
+      "releaseType": "release"
     }
   },
   "collective": {
